@@ -1,0 +1,60 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: #2a3a5c #0f0f1a;
+  }
+}
+
+@layer components {
+  .price-up {
+    @apply text-pyth-green;
+    animation: flash-green 0.3s ease;
+  }
+  .price-down {
+    @apply text-pyth-red;
+    animation: flash-red 0.3s ease;
+  }
+}
+
+@keyframes flash-green {
+  0% {
+    background-color: rgba(0, 255, 136, 0.2);
+  }
+  100% {
+    background-color: transparent;
+  }
+}
+
+@keyframes flash-red {
+  0% {
+    background-color: rgba(255, 68, 102, 0.2);
+  }
+  100% {
+    background-color: transparent;
+  }
+}
+
+.skeleton {
+  @apply bg-pyth-surface-light rounded;
+  background-image: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.04) 50%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
