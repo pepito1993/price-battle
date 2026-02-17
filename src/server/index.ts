@@ -7,6 +7,14 @@ import { PythLazerSource } from "./sources/pyth-lazer.js";
 import { PriceStore } from "./store.js";
 import type { ServerMessage, ClientMessage } from "./types.js";
 
+// Prevent unhandled errors from crashing the server
+process.on("uncaughtException", (err) => {
+  console.error("[Server] Uncaught exception:", err.message);
+});
+process.on("unhandledRejection", (err) => {
+  console.error("[Server] Unhandled rejection:", err);
+});
+
 const PORT = parseInt(process.env.PORT ?? "3001", 10);
 const PYTH_TOKEN = process.env.PYTH_LAZER_TOKEN;
 
@@ -147,15 +155,17 @@ function broadcast(msg: ServerMessage): void {
 }
 
 // --- Start ---
-server.listen(PORT, "0.0.0.0", async () => {
+// Start HTTP server FIRST, then connect to Pyth in the background
+server.listen(PORT, "0.0.0.0", () => {
   console.log(`[Server] HTTP + WS listening on http://localhost:${PORT}`);
   console.log(`[Server] WebSocket endpoint: ws://localhost:${PORT}/ws`);
+  console.log("[Server] Server is ready — connecting to Pyth Lazer...");
 
-  try {
-    await pythSource.connect();
-  } catch (err) {
+  // Connect to Pyth in background — don't block or crash the server
+  pythSource.connect().catch((err) => {
     console.error("[Server] Failed to connect to Pyth Lazer:", err);
-  }
+    console.error("[Server] The server is still running. Prices will not stream until Pyth connects.");
+  });
 });
 
 // Graceful shutdown
