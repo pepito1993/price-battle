@@ -147,7 +147,7 @@ function broadcast(msg: ServerMessage): void {
 }
 
 // --- Start ---
-server.listen(PORT, async () => {
+server.listen(PORT, "0.0.0.0", async () => {
   console.log(`[Server] HTTP + WS listening on http://localhost:${PORT}`);
   console.log(`[Server] WebSocket endpoint: ws://localhost:${PORT}/ws`);
 
